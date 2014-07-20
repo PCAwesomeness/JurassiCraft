@@ -34,6 +34,8 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         if (tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord) == Util.getBlock(2))
         {
             GL11.glPushMatrix();
+            GL11.glColor4f(1f, 1f, 1f, 1f);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glTranslatef((float) x + 0.45f, (float) y + 1.5f, (float) z + 0.5f);
             int rotation = BlockCultivate.getRotation(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord);
             GL11.glRotatef(rotation == 0 ? 0f : rotation == 1 ? -90f : rotation == 2 ? -180f : 90f, 0f, 1f, 0f);
@@ -44,6 +46,8 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         }
 
         GL11.glPushMatrix();
+        GL11.glColor4f(1f, 1f, 1f, 1f);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glTranslatef((float) x + 0.5f, (float) y + 1.5f, (float) z + 0.5f);
         GL11.glRotatef(180f, 0f, 0f, 1f);
         Minecraft.getMinecraft().renderEngine.bindTexture(cultivateTextures[tile.getWorldObj().getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord)]);

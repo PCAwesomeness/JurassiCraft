@@ -1,182 +1,76 @@
 package to.uk.ilexiconn.jurassicraft;
 
-import java.util.ArrayList;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.client.IItemRenderer;
-
-import to.uk.ilexiconn.jurassicraft.data.Data;
-import to.uk.ilexiconn.jurassicraft.data.block.BlockEgg;
-import to.uk.ilexiconn.jurassicraft.data.entity.Dinosaur;
-import to.uk.ilexiconn.jurassicraft.data.entity.JsonEntityParser;
-import to.uk.ilexiconn.jurassicraft.data.item.ItemDNA;
-import to.uk.ilexiconn.jurassicraft.data.item.ItemMeat;
-import to.uk.ilexiconn.jurassicraft.data.tile.TileEgg;
-import to.uk.ilexiconn.jurassicraft.proxy.ServerProxy;
-
-import cpw.mods.fml.common.IWorldGenerator;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.BiomeManager;
+import thehippomaster.AnimationAPI.AnimationAPI;
+import thehippomaster.AnimationAPI.CommonProxy;
+import to.uk.ilexiconn.jurassicraft.data.Data;
+import to.uk.ilexiconn.jurassicraft.data.server.ServerProxy;
+import to.uk.ilexiconn.jurassicraft.data.server.entity.EntityParser;
 
 public class Util
 {
-    /** Stuff */
-    private static final Data data = new Data();
-    private static final JsonEntityParser entityParser = new JsonEntityParser();
-    @SidedProxy(clientSide = "to.uk.ilexiconn.jurassicraft.proxy.ClientProxy", serverSide = "to.uk.ilexiconn.jurassicraft.proxy.ServerProxy")
-    public static ServerProxy proxy;
-    private static CreativeTabs[] tabs = new CreativeTabs[512];
-    private static Block[] blocks = new Block[512];
-    private static Item[] items = new Item[512];
-    private static ArrayList<ItemDNA> dnas = new ArrayList<ItemDNA>();
-    private static ArrayList<BlockEgg> eggs = new ArrayList<BlockEgg>();
-    private static ArrayList<Dinosaur> dinos = new ArrayList<Dinosaur>();
-    private static ArrayList<ItemMeat> meat = new ArrayList<ItemMeat>();
+    //Stuff
+    @SidedProxy(serverSide = "to.uk.ilexiconn.jurassicraft.data.server.ServerProxy", clientSide = "to.uk.ilexiconn.jurassicraft.data.client.ClientProxy")
+    private static ServerProxy proxy;
+    @SidedProxy(clientSide = "thehippomaster.AnimationAPI.client.ClientProxy", serverSide = "thehippomaster.AnimationAPI.CommonProxy")
+    private static CommonProxy animationProxy;
+    private static AnimationAPI animationAPI;
+    private static Data data = new Data();
+    private static EntityParser entityParser = new EntityParser();
+    private static Object[][] stuff = new Object[4][1024];
 
-    /** Getters */
-    public static CreativeTabs getCreativeTab(int id)
+    //Setters
+    public void addCreativeTab(int id, CreativeTabs creativeTab)
     {
-        return tabs[id];
-    }
-
-    public static Block getBlock(int id)
-    {
-        return blocks[id];
-    }
-
-    public static Item getItem(int id)
-    {
-        return items[id];
-    }
-
-    public static ArrayList<ItemDNA> getDNAArray()
-    {
-        return dnas;
-    }
-
-    public static ArrayList<BlockEgg> getEggArray()
-    {
-        return eggs;
-    }
-
-    public static String getModId()
-    {
-        return "jurassicraft:";
-    }
-
-    public static Data getData()
-    {
-        return data;
-    }
-
-    public static JsonEntityParser getEntityParser()
-    {
-        return entityParser;
-    }
-
-    public static ArrayList<Dinosaur> getDinos()
-    {
-        return dinos;
-    }
-
-    public static ItemMeat getMeat(int id)
-    {
-        return meat.get(id);
-    }
-
-    /** Adders */
-    public void addCreativeTab(int id, CreativeTabs tab)
-    {
-        if (id != -1) tabs[id] = tab;
-    }
-
-    public void addBlock(int id, Block block)
-    {
-        if (id != -1) blocks[id] = block;
-        GameRegistry.registerBlock(block, block.getUnlocalizedName());
+        if (id != -1) stuff[0][id] = creativeTab;
     }
 
     public void addItem(int id, Item item)
     {
-        if (id != -1) items[id] = item;
+        if (id != -1) stuff[1][id] = id;
         GameRegistry.registerItem(item, item.getUnlocalizedName());
     }
 
-    public void addDNA(String dinoName)
+    public void addBlock(int id, Block block)
     {
-        ItemDNA item = new ItemDNA(dinoName);
-        dnas.add(item);
-        GameRegistry.registerItem(item, item.getUnlocalizedName());
+        if (id != -1) stuff[2][id] = block;
+        GameRegistry.registerBlock(block, block.getUnlocalizedName());
     }
 
-    public void addMeat(String dinoName)
-    {
-        ItemMeat item = new ItemMeat(dinoName);
-        meat.add(item);
-        addItem(-1, item);
-    }
-
-    public void addBlockWithTileEntity(int id, BlockContainer block, Class<? extends TileEntity> tileEntity, boolean doRegister)
+    public void addBlockWithTileEntity(int id, BlockContainer block, Class<? extends TileEntity> tileEntity, boolean registerEntity)
     {
         addBlock(id, block);
-        if (doRegister) GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
+        if (registerEntity) GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
     }
 
-    public void addTileEntity(Class<? extends TileEntity> tile)
+    public void addBlockWithSubBlocks(int id, Block block, Class<? extends TileEntity> tileEntity, Class<? extends ItemBlock> itemBlock, boolean renderEntity)
     {
-        GameRegistry.registerTileEntity(tile, tile.getSimpleName());
+        if (id != -1) stuff[2][id] = block;
+        GameRegistry.registerBlock(block, itemBlock, block.getUnlocalizedName());
+        if (renderEntity) GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
     }
 
-    public void addEntity(Dinosaur dino)
+    public void addEntity(String name, Class<? extends EntityLiving> entity, int color1, int color2)
     {
-        try
-        {
-            dinos.add(dino);
-            Class entity = Class.forName("to.uk.ilexiconn.jurassicraft.data.entity.entity.Entity" + dino.dinoName);
-            int entityId = EntityRegistry.findGlobalUniqueEntityId();
-            EntityRegistry.registerGlobalEntityID(entity, dino.dinoName, entityId, 0, 0);
-            EntityRegistry.registerModEntity(entity, dino.dinoName, entityId, JurassiCraft.instance, 64, 1, true);
-        }
-        catch (Exception e)
-        {
-
-        }
-    }
-
-    public void addGuiHandler(IGuiHandler handler)
-    {
-        NetworkRegistry.INSTANCE.registerGuiHandler(JurassiCraft.instance, handler);
-    }
-
-    public void addWorldGenerator(IWorldGenerator generator, int weight)
-    {
-        GameRegistry.registerWorldGenerator(generator, weight);
-    }
-
-    public void addEgg(final String dinoName)
-    {
-        BlockEgg egg = new BlockEgg(dinoName)
-        {
-            public TileEntity createNewTileEntity(World world, int meta)
-            {
-                return new TileEgg(dinoName);
-            }
-        };
-        eggs.add(egg);
-        addBlock(-1, egg);
+        int entityId = EntityRegistry.findGlobalUniqueEntityId();
+        EntityRegistry.registerGlobalEntityID(entity, name, entityId, color1, color2);
+        EntityRegistry.registerModEntity(entity, name, entityId, JurassiCraft.instance, 64, 1, true);
     }
 
     public void addShapedRecipe(ItemStack output, Object... obj)
@@ -189,30 +83,73 @@ public class Util
         GameRegistry.addShapelessRecipe(output, obj);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void addBlockRenderer(Class<? extends TileEntity> tileEntity, TileEntitySpecialRenderer renderer)
+    public void addGuiHandler(IGuiHandler handler)
     {
-        proxy.renderTileEntity(tileEntity, renderer);
+        NetworkRegistry.INSTANCE.registerGuiHandler(JurassiCraft.instance, handler);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void addEntityRenderer(Dinosaur dino)
+    public void addBiome(int id, BiomeGenBase biome)
     {
-        try
-        {
-            RenderLiving renderer = (RenderLiving) Class.forName("to.uk.ilexiconn.jurassicraft.data.entity.render.Render" + dino.dinoName).getDeclaredConstructor(Dinosaur.class).newInstance(dino);
-            Class entity = Class.forName("to.uk.ilexiconn.jurassicraft.data.entity.entity.Entity" + dino.dinoName);
-            proxy.renderEntity(entity, renderer);
-        }
-        catch (Exception e)
-        {
-
-        }
+        BiomeManager.warmBiomes.add(new BiomeManager.BiomeEntry(biome, id));
+        BiomeManager.addSpawnBiome(biome);
+        BiomeManager.addVillageBiome(biome, true);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void addItemRenderer(Item item, IItemRenderer render)
+    public void addBlockHandler(int id, ISimpleBlockRenderingHandler blockHandler)
     {
-        proxy.renderItem(item, render);
+        if (id != -1) stuff[3][id] = blockHandler;
+        RenderingRegistry.registerBlockHandler(blockHandler);
+    }
+
+    //Getters
+    public static String getModId()
+    {
+        return "jurassicraft:";
+    }
+
+    public static Data getData()
+    {
+        return data;
+    }
+
+    public static ServerProxy getProxy()
+    {
+        return proxy;
+    }
+
+    public static CommonProxy getAnimationProxy()
+    {
+        return animationProxy;
+    }
+
+    public static AnimationAPI getAnimationAPI()
+    {
+        if(animationAPI == null) animationAPI = new AnimationAPI();
+        return animationAPI;
+    }
+
+    public static EntityParser getEntityParser()
+    {
+        return entityParser;
+    }
+
+    public static CreativeTabs getCreativeTab(int id)
+    {
+        return (CreativeTabs) stuff[0][id];
+    }
+
+    public static Item getItem(int id)
+    {
+        return (Item) stuff[1][id];
+    }
+
+    public static Block getBlock(int id)
+    {
+        return (Block) stuff[2][id];
+    }
+
+    public static int getRenderId(int id)
+    {
+        return ((ISimpleBlockRenderingHandler) stuff[3][id]).getRenderId();
     }
 }

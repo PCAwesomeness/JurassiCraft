@@ -2,15 +2,8 @@
 *.iml
 *.ipr
 *.iws
-*.txt
-.project
-.classpath
-.settings/
-.gradle/
 minecraft/
 build/
 out/
-bin
-config/
-logs/
-saves/
+gradle/
+.gradle/

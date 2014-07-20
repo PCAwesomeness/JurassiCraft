@@ -1,51 +1,31 @@
 package to.uk.ilexiconn.jurassicraft;
 
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.world.biome.BiomeGenBase;
-
-import to.uk.ilexiconn.jurassicraft.data.entity.Dinosaur;
-import to.uk.ilexiconn.jurassicraft.data.entity.entity.EntityCoelacanth;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-@Mod(modid = "jurassicraft", name = "JurassiCraft", version = "1.1.2")
-public class JurassiCraft extends Util
+@Mod(modid = "jurassicraft", name = "JurassiCraft", version = "b1.0.0")
+public class JurassiCraft
 {
     @Mod.Instance("jurassicraft")
     public static JurassiCraft instance;
-    public boolean isServerInitialized;
 
     @Mod.EventHandler
-    public void init(FMLPreInitializationEvent event)
+    public void init0(FMLPreInitializationEvent event) throws Exception
     {
-        getData().init();
-
-        getEntityParser().parseServerEntities();
-
-        for (Dinosaur dino : getDinos()) System.out.println("Added dino " + dino.dinoName + " with ID " + dino.id);
-
-        isServerInitialized = true;
+        Util.getProxy().init();
     }
 
-    @SideOnly(Side.CLIENT)
     @Mod.EventHandler
-    public void initClient(FMLPreInitializationEvent event)
+    public void init2(FMLInitializationEvent event)
     {
-        while (!isServerInitialized);
-
-        getData().initClient();
-
-        getEntityParser().parseClientEntities();
+        Util.getAnimationAPI().init(event);
     }
-    
+
     @Mod.EventHandler
-    public void load(FMLInitializationEvent event)
+    public void init3(FMLPostInitializationEvent event)
     {
-        EntityRegistry.addSpawn(EntityCoelacanth.class, 2, 3, 5, EnumCreatureType.waterCreature, new BiomeGenBase[] {BiomeGenBase.deepOcean, BiomeGenBase.ocean});
+        Util.getAnimationAPI().postInit(event);
     }
 }

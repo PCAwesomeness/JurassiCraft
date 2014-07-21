@@ -50,8 +50,6 @@ public class ModelEmbryo extends MowzieModelBase
         shapes[8].setRotationPoint(-2f, 3f, 0.5f);
         shapes[8].setRotationAngle(-0.4363323f, 0f, 0f);
 
-        //addChildTo(shapes[2], shapes[1]);
-        //addChildTo(shapes[1], shapes[0]);
         addChildTo(shapes[5], shapes[0]);
         addChildTo(shapes[6], shapes[0]);
         addChildTo(shapes[7], shapes[0]);

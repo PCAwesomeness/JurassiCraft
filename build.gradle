@@ -20,6 +20,7 @@ buildscript
     }
 }
 
+apply plugin: 'scala'
 apply plugin: 'forge'
 
 version = "b1.0.0"

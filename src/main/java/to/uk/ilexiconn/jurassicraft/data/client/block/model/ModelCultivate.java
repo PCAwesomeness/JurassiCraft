@@ -37,9 +37,14 @@ public class ModelCultivate extends ModelBase
         for (ModelRenderer shape : shapes) shape.setTextureSize(64, 64);
     }
 
-    public void render(boolean inventory)
+    public void render(boolean withGlass)
     {
         for (int i = 0; i < shapes.length - 1; i++) shapes[i].render(0.0625f);
-        if (inventory) shapes[6].render(0.0625f);
+        if (withGlass) shapes[6].render(0.0625f);
+    }
+
+    public void renderGlass()
+    {
+        shapes[6].render(0.0625f);
     }
 }

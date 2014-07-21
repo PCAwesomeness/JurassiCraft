@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import to.uk.ilexiconn.jurassicraft.Util;
 import to.uk.ilexiconn.jurassicraft.data.client.block.RenderCultivateBlock;
 import to.uk.ilexiconn.jurassicraft.data.client.block.RenderCultivateItem;
-import to.uk.ilexiconn.jurassicraft.data.client.block.RenderCultivateWater;
 import to.uk.ilexiconn.jurassicraft.data.server.block.BlockCultivate;
 import to.uk.ilexiconn.jurassicraft.data.server.creativetab.TabJurassiCraft;
 import to.uk.ilexiconn.jurassicraft.data.server.gui.GuiHandler;
@@ -44,7 +43,6 @@ public class Data extends Util
         }
         { //Events
             addGuiHandler(new GuiHandler());
-            addBlockHandler(0, new RenderCultivateWater());
         }
         { //Biomes
 

@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 public class TileCultivate extends TileEntity
 {
     public int rotation;
+    public int progress;
     public float animationTick;
 
     public void writeToNBT(NBTTagCompound tag)
@@ -25,6 +26,7 @@ public class TileCultivate extends TileEntity
 
     public Packet getDescriptionPacket()
     {
+        super.getDescriptionPacket();
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
@@ -32,6 +34,7 @@ public class TileCultivate extends TileEntity
 
     public void onDataPacket(NetworkManager networkManager, S35PacketUpdateTileEntity packet)
     {
+        super.onDataPacket(networkManager, packet);
         readFromNBT(packet.func_148857_g());
     }
 

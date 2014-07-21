@@ -76,7 +76,7 @@ public class BlockCultivate
 
         public int getRenderType()
         {
-            return Util.getRenderId(0);
+            return -1;
         }
 
         @SideOnly(Side.CLIENT)

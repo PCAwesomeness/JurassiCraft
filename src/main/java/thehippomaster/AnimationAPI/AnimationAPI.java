@@ -1,7 +1,6 @@
 package thehippomaster.AnimationAPI;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import net.minecraft.entity.Entity;
@@ -11,14 +10,12 @@ import to.uk.ilexiconn.jurassicraft.Util;
 
 public class AnimationAPI
 {
-    @EventHandler
     public void init(FMLInitializationEvent e)
     {
         packetPipeline.initialize();
         packetPipeline.registerPacket(PacketAnim.class);
     }
 
-    @EventHandler
     public void postInit(FMLPostInitializationEvent e)
     {
         Util.getAnimationProxy().initTimer();

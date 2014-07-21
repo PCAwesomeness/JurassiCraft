@@ -41,7 +41,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
             GL11.glRotatef(rotation == 0 ? 0f : rotation == 1 ? -90f : rotation == 2 ? -180f : 90f, 0f, 1f, 0f);
             GL11.glRotatef(180f, 0f, 0f, 1f);
             Minecraft.getMinecraft().renderEngine.bindTexture(embryoTextures);
-            embryo.render();
+            embryo.render(tile);
             GL11.glPopMatrix();
         }
 

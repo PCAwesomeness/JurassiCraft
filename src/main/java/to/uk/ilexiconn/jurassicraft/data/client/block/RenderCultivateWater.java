@@ -33,7 +33,7 @@ public class RenderCultivateWater implements ISimpleBlockRenderingHandler
 
     public boolean shouldRender3DInInventory(int modelId)
     {
-        return true;
+        return false;
     }
 
     public int getRenderId()

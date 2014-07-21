@@ -12,7 +12,7 @@ import to.uk.ilexiconn.jurassicraft.Util;
 import java.io.*;
 import java.util.Collection;
 
-class EntityParser extends Util
+public class EntityParser extends Util
 {
     public void init() throws Exception
     {

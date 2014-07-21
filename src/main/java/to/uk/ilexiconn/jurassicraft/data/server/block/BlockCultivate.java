@@ -97,8 +97,9 @@ public class BlockCultivate
 
         public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float t, float h, float k)
         {
-            player.openGui(JurassiCraft.instance, 0, world, x, y, z);
-            updateBlockStateWithBottom(world, x, y, z, !isLit);
+            ((TileCultivate) world.getTileEntity(x, y, z)).fluidAmount++;
+            //player.openGui(JurassiCraft.instance, 0, world, x, y, z);
+            //updateBlockStateWithBottom(world, x, y, z, !isLit);
             return true;
         }
 

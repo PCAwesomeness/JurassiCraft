@@ -40,6 +40,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
             GL11.glColor4f(1f, 1f, 1f, 1f);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glTranslatef((float) x + 0.5f, (float) y + 1.5f, (float) z + 0.5f);
+            GL11.glScalef(1f + (tile.progress / 10f + 0.1f), 1f + (tile.progress / 10f + 0.1f), 1f + (tile.progress / 10f + 0.1f));
             int rotation = BlockCultivate.getRotation(tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord);
             GL11.glRotatef(rotation == 0 ? 0f : rotation == 1 ? -90f : rotation == 2 ? -180f : 90f, 0f, 1f, 0f);
             GL11.glRotatef(180f, 0f, 0f, 1f);
@@ -57,7 +58,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         cultivate.render(false);
         GL11.glPopMatrix();
 
-        FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, 1);
+        FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, tile.fluidAmount);
         int[] displayList = FluidRenderer.getFluidDisplayLists(fluidStack, tile.getWorldObj(), false);
         if (displayList != null && tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord) == Util.getBlock(2))
         {
@@ -70,7 +71,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
             GL11.glTranslatef((float) x + 0.125f, (float) y + 0.5f, (float) z + 0.125f);
             GL11.glScalef(0.75f, 3.0f, 0.75f);
             GL11.glTranslatef(0, -0.5f, 0);
-            GL11.glCallList(displayList[(int) ((float) fluidStack.amount * (FluidRenderer.DISPLAY_STAGES - 1))]);
+            GL11.glCallList(displayList[((tile.fluidAmount + 10) * 2) + 25]);
             GL11.glPopAttrib();
             GL11.glPopMatrix();
         }

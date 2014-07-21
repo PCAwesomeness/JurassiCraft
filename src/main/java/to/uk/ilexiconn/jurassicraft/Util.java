@@ -2,6 +2,7 @@ package to.uk.ilexiconn.jurassicraft;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -151,5 +152,10 @@ public class Util
     public static int getRenderId(int id)
     {
         return ((ISimpleBlockRenderingHandler) stuff[3][id]).getRenderId();
+    }
+
+    public static boolean buildcraftEnabled()
+    {
+        return Loader.isModLoaded("BuildCraft|Core");
     }
 }

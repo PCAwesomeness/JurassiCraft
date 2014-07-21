@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -97,9 +98,13 @@ public class BlockCultivate
 
         public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float t, float h, float k)
         {
-            ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel++;
-            //player.openGui(JurassiCraft.instance, 0, world, x, y, z);
-            //updateBlockStateWithBottom(world, x, y, z, !isLit);
+            ItemStack stack = player.getCurrentEquippedItem();
+            if (stack != null && stack.getItem() == Items.water_bucket && !Util.buildcraftEnabled() && ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel < 8)
+            {
+                ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel += 2;
+                if (((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel == 8) updateBlockStateWithBottom(world, x, y, z, true);
+            }
+            else player.openGui(JurassiCraft.instance, 0, world, x, y, z);
             return true;
         }
 
@@ -203,8 +208,13 @@ public class BlockCultivate
 
         public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float t, float h, float k)
         {
-            player.openGui(JurassiCraft.instance, 0, world, x, y - 1, z);
-            updateBlockStateWithTop(world, x, y, z, !isLit);
+            ItemStack stack = player.getCurrentEquippedItem();
+            if (stack != null && stack.getItem() == Items.water_bucket && !Util.buildcraftEnabled() && ((TileCultivate) world.getTileEntity(x, y - 1, z)).fluidLevel < 8)
+            {
+                ((TileCultivate) world.getTileEntity(x, y - 1, z)).fluidLevel += 2;
+                if (((TileCultivate) world.getTileEntity(x, y - 1, z)).fluidLevel == 8) updateBlockStateWithTop(world, x, y, z, true);
+            }
+            else player.openGui(JurassiCraft.instance, 0, world, x, y - 1, z);
             return true;
         }
     }
@@ -230,10 +240,16 @@ public class BlockCultivate
     public static void updateBlockStateWithTop(World world, int x, int y, int z, boolean lit)
     {
         int metadata = world.getBlockMetadata(x, y, z);
+        TileEntity tileEntity = world.getTileEntity(x, y - 1, z);
 
         world.setBlock(x, y - 1, z, Util.getBlock(lit ? 2 : 0));
         world.setBlock(x, y, z, Util.getBlock(lit ? 3 : 1));
 
+        if (tileEntity != null)
+        {
+            tileEntity.validate();
+            world.setTileEntity(x, y - 1, z, tileEntity);
+        }
         world.setBlockMetadataWithNotify(x, y - 1, z, metadata, 2);
         world.setBlockMetadataWithNotify(x, y, z, metadata, 2);
     }

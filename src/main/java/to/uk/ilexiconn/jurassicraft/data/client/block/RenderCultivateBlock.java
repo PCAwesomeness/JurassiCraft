@@ -1,12 +1,15 @@
 package to.uk.ilexiconn.jurassicraft.data.client.block;
 
-import buildcraft.core.render.FluidRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 import to.uk.ilexiconn.jurassicraft.Util;
 import to.uk.ilexiconn.jurassicraft.data.client.block.model.ModelCultivate;
@@ -14,10 +17,15 @@ import to.uk.ilexiconn.jurassicraft.data.client.block.model.ModelEmbryo;
 import to.uk.ilexiconn.jurassicraft.data.server.block.BlockCultivate;
 import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RenderCultivateBlock extends TileEntitySpecialRenderer
 {
     public String[] colors = {"black", "red", "green", "brown", "blue", "purple", "cyan", "light_gray", "gray", "pink", "lime", "yellow", "light_blue", "magenta", "orange", "white"};
     public ModelCultivate cultivate = new ModelCultivate();
+    public Map<Fluid, int[]> stillRenderCache = new HashMap<Fluid, int[]>();
+    public RenderEntityBlock.RenderInfo liquidBlock = new RenderEntityBlock.RenderInfo();
     public ModelEmbryo embryo = new ModelEmbryo();
     public ResourceLocation[] cultivateTextures;
     public ResourceLocation embryoTextures;
@@ -58,20 +66,19 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         cultivate.render(false);
         GL11.glPopMatrix();
 
-        FluidStack fluidStack = new FluidStack(FluidRegistry.WATER, tile.fluidAmount);
-        int[] displayList = FluidRenderer.getFluidDisplayLists(fluidStack, tile.getWorldObj(), false);
-        if (displayList != null && tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord) == Util.getBlock(2))
+        int[] displayList = getFluidDisplayLists(tile.getWorldObj());
+        if (displayList != null)
         {
             GL11.glPushMatrix();
             GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
             GL11.glEnable(GL11.GL_CULL_FACE);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            bindTexture(FluidRenderer.getFluidSheet(fluidStack));
-            GL11.glTranslatef((float) x + 0.125f, (float) y + 0.5f, (float) z + 0.125f);
-            GL11.glScalef(0.75f, 3.0f, 0.75f);
+            bindTexture(TextureMap.locationBlocksTexture);
+            GL11.glTranslatef((float) x + 0.125f, (float) y + 1.8f, (float) z + 0.125f);
+            GL11.glScalef(0.75f, 2.9f, 0.75f);
             GL11.glTranslatef(0, -0.5f, 0);
-            GL11.glCallList(displayList[((tile.fluidAmount + 10) * 2) + 25]);
+            GL11.glCallList(displayList[tile.fluidLevel * 2]);
             GL11.glPopAttrib();
             GL11.glPopMatrix();
         }
@@ -85,5 +92,49 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         cultivate.renderGlass();
         GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_BLEND);
+    }
+
+    public int[] getFluidDisplayLists(World world)
+    {
+        Fluid fluid = FluidRegistry.WATER;
+        if (fluid == null) return null;
+        int[] diplayLists = stillRenderCache.get(fluid);
+        if (diplayLists != null) return diplayLists;
+
+        diplayLists = new int[100];
+
+        liquidBlock.baseBlock = Blocks.water;
+        liquidBlock.texture = FluidRegistry.WATER.getStillIcon();
+
+        stillRenderCache.put(fluid, diplayLists);
+
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+
+        for (int s = 0; s < 100; ++s)
+        {
+            diplayLists[s] = GLAllocation.generateDisplayLists(1);
+            GL11.glNewList(diplayLists[s], 4864);
+
+            liquidBlock.minX = 0.01f;
+            liquidBlock.minY = 0;
+            liquidBlock.minZ = 0.01f;
+
+            liquidBlock.maxX = 0.99f;
+            liquidBlock.maxY = (float) s / (float) 100;
+            liquidBlock.maxZ = 0.99f;
+
+            RenderEntityBlock.instance.renderBlock(liquidBlock, world, 0, 0, 0, false);
+
+            GL11.glEndList();
+        }
+
+        GL11.glColor4f(1, 1, 1, 1);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
+
+        return diplayLists;
     }
 }

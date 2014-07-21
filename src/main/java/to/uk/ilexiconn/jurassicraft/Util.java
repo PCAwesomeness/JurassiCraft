@@ -21,6 +21,7 @@ import thehippomaster.AnimationAPI.AnimationAPI;
 import thehippomaster.AnimationAPI.CommonProxy;
 import to.uk.ilexiconn.jurassicraft.data.Data;
 import to.uk.ilexiconn.jurassicraft.data.server.ServerProxy;
+import to.uk.ilexiconn.jurassicraft.data.server.entity.EntityParser;
 
 public class Util
 {

@@ -20,11 +20,10 @@ buildscript
     }
 }
 
-apply plugin: 'scala'
 apply plugin: 'forge'
 
 version = "b1.0.0"
-group= "to.uk.ilexiconn.jurassicraft"
+group = "to.uk.ilexiconn.jurassicraft"
 archivesBaseName = "JurassiCraft"
 libsDirName = '../target'
 

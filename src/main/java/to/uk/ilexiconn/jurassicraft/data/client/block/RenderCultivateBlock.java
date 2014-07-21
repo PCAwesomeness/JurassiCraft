@@ -1,12 +1,17 @@
 package to.uk.ilexiconn.jurassicraft.data.client.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -17,6 +22,7 @@ import to.uk.ilexiconn.jurassicraft.data.client.block.model.ModelEmbryo;
 import to.uk.ilexiconn.jurassicraft.data.server.block.BlockCultivate;
 import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivate;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +31,8 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
     public String[] colors = {"black", "red", "green", "brown", "blue", "purple", "cyan", "light_gray", "gray", "pink", "lime", "yellow", "light_blue", "magenta", "orange", "white"};
     public ModelCultivate cultivate = new ModelCultivate();
     public Map<Fluid, int[]> stillRenderCache = new HashMap<Fluid, int[]>();
-    public RenderEntityBlock.RenderInfo liquidBlock = new RenderEntityBlock.RenderInfo();
+    public RenderInfo liquidBlock = new RenderInfo();
+    public RenderBlocks renderBlocks = new RenderBlocks();
     public ModelEmbryo embryo = new ModelEmbryo();
     public ResourceLocation[] cultivateTextures;
     public ResourceLocation embryoTextures;
@@ -98,15 +105,15 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
     {
         Fluid fluid = FluidRegistry.WATER;
         if (fluid == null) return null;
-        int[] diplayLists = stillRenderCache.get(fluid);
-        if (diplayLists != null) return diplayLists;
+        int[] displayLists = stillRenderCache.get(fluid);
+        if (displayLists != null) return displayLists;
 
-        diplayLists = new int[100];
+        displayLists = new int[100];
 
         liquidBlock.baseBlock = Blocks.water;
         liquidBlock.texture = FluidRegistry.WATER.getStillIcon();
 
-        stillRenderCache.put(fluid, diplayLists);
+        stillRenderCache.put(fluid, displayLists);
 
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
@@ -114,8 +121,8 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
 
         for (int s = 0; s < 100; ++s)
         {
-            diplayLists[s] = GLAllocation.generateDisplayLists(1);
-            GL11.glNewList(diplayLists[s], 4864);
+            displayLists[s] = GLAllocation.generateDisplayLists(1);
+            GL11.glNewList(displayLists[s], 4864);
 
             liquidBlock.minX = 0.01f;
             liquidBlock.minY = 0;
@@ -125,7 +132,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
             liquidBlock.maxY = (float) s / (float) 100;
             liquidBlock.maxZ = 0.99f;
 
-            RenderEntityBlock.instance.renderBlock(liquidBlock, world, 0, 0, 0, false);
+            renderBlock(liquidBlock, world, 0, 0, 0, false);
 
             GL11.glEndList();
         }
@@ -135,6 +142,125 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
 
-        return diplayLists;
+        return displayLists;
+    }
+
+    public static class RenderInfo
+    {
+        public double minX;
+        public double minY;
+        public double minZ;
+        public double maxX;
+        public double maxY;
+        public double maxZ;
+        public Block baseBlock = Blocks.sand;
+        public IIcon texture = null;
+        public IIcon[] textureArray = null;
+        public boolean[] renderSide = new boolean[6];
+        public float light = -1f;
+        public int brightness = -1;
+
+        public RenderInfo()
+        {
+            setRenderAllSides();
+        }
+
+        public RenderInfo(Block template, IIcon[] texture)
+        {
+            this();
+            baseBlock = template;
+            textureArray = texture;
+        }
+
+        public RenderInfo(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+        {
+            this();
+            setBounds(minX, minY, minZ, maxX, maxY, maxZ);
+        }
+
+        public final void setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+        {
+            this.minX = minX;
+            this.minY = minY;
+            this.minZ = minZ;
+            this.maxX = maxX;
+            this.maxY = maxY;
+            this.maxZ = maxZ;
+        }
+
+        public final void setRenderAllSides()
+        {
+            Arrays.fill(renderSide, true);
+        }
+
+        public IIcon getBlockTextureFromSide(int i)
+        {
+            if (texture != null) return texture;
+
+            int index = i;
+
+            if (textureArray == null || textureArray.length == 0) return baseBlock.getBlockTextureFromSide(index);
+            else if (index >= textureArray.length) index = 0;
+            return textureArray[index];
+        }
+    }
+
+    public void renderBlock(RenderInfo info, IBlockAccess blockAccess, int x, int y, int z, boolean doLight)
+    {
+        float lightBottom = 0.5F;
+        float lightTop = 1.0F;
+        float lightEastWest = 0.8F;
+        float lightNorthSouth = 0.6F;
+
+        Tessellator tessellator = Tessellator.instance;
+
+        boolean realDoLight = doLight;
+
+        if (blockAccess == null) realDoLight = false;
+
+        tessellator.startDrawingQuads();
+
+        float light = 0;
+        if (realDoLight)
+        {
+            if (info.light < 0)
+            {
+                light = info.baseBlock.getMixedBrightnessForBlock(blockAccess, x, y, z);
+                light = light + ((1.0f - light) * 0.4f);
+            }
+            else light = info.light;
+            int brightness;
+            if (info.brightness < 0) brightness = info.baseBlock.getMixedBrightnessForBlock(blockAccess, x, y, z);
+            else brightness = info.brightness;
+            tessellator.setBrightness(brightness);
+            tessellator.setColorOpaque_F(lightBottom * light, lightBottom * light, lightBottom * light);
+        }
+        else if (info.brightness >= 0) tessellator.setBrightness(info.brightness);
+
+        renderBlocks.setRenderBounds(info.minX, info.minY, info.minZ, info.maxX, info.maxY, info.maxZ);
+
+        if (info.renderSide[0]) renderBlocks.renderFaceYNeg(info.baseBlock, x, y, z, info.getBlockTextureFromSide(0));
+
+        if (realDoLight) tessellator.setColorOpaque_F(lightTop * light, lightTop * light, lightTop * light);
+
+        if (info.renderSide[1]) renderBlocks.renderFaceYPos(info.baseBlock, x, y, z, info.getBlockTextureFromSide(1));
+
+        if (realDoLight) tessellator.setColorOpaque_F(lightEastWest * light, lightEastWest * light, lightEastWest * light);
+
+        if (info.renderSide[2]) renderBlocks.renderFaceZNeg(info.baseBlock, x, y, z, info.getBlockTextureFromSide(2));
+
+        if (realDoLight) tessellator.setColorOpaque_F(lightEastWest * light, lightEastWest * light, lightEastWest * light);
+
+        if (info.renderSide[3]) renderBlocks.renderFaceZPos(info.baseBlock, x, y, z, info.getBlockTextureFromSide(3));
+
+        if (realDoLight) tessellator.setColorOpaque_F(lightNorthSouth * light, lightNorthSouth * light, lightNorthSouth * light);
+
+        if (info.renderSide[4]) renderBlocks.renderFaceXNeg(info.baseBlock, x, y, z, info.getBlockTextureFromSide(4));
+
+        if (realDoLight) tessellator.setColorOpaque_F(lightNorthSouth * light, lightNorthSouth * light, lightNorthSouth * light);
+
+        if (info.renderSide[5]) renderBlocks.renderFaceXPos(info.baseBlock, x, y, z, info.getBlockTextureFromSide(5));
+
+        tessellator.draw();
     }
 }

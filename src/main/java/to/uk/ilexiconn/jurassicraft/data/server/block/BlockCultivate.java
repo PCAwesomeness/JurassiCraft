@@ -7,24 +7,55 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import to.uk.ilexiconn.jurassicraft.JurassiCraft;
 import to.uk.ilexiconn.jurassicraft.Util;
 import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivate;
-import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivateBuildcraft;
 
 import java.util.List;
 import java.util.Random;
 
 public class BlockCultivate
 {
-    public static class Bottom extends BlockContainer
+    private static AxisAlignedBB[][] boxes =
+    {
+        { //top
+            AxisAlignedBB.getBoundingBox(0.0f,      -1.0f,      0.0f,       1.0f,       -0.6215f,   1.0f),
+
+            AxisAlignedBB.getBoundingBox(0.0f,      -0.6215f,   0.0f,       0.062f,     0.93f,      0.062f),
+            AxisAlignedBB.getBoundingBox(0.938f,    -0.6215f,   0.0f,       1.0f,       0.93f,      0.062f),
+            AxisAlignedBB.getBoundingBox(0.0f,      -0.6215f,   0.938f,     0.062f,     0.93f,      1.0f),
+            AxisAlignedBB.getBoundingBox(0.938f,    -0.6215f,   0.938f,     1.0f,       0.93f,      1.0f),
+
+            AxisAlignedBB.getBoundingBox(0.062f,    -0.6215f,   0.062f,     0.938f,     0.93f,      0.938f),
+
+            AxisAlignedBB.getBoundingBox(0.0f,      0.93f,      0.0f,       1.0f,       1.0f,       1.0f)
+        },
+        { //bottom
+            AxisAlignedBB.getBoundingBox(0.0f,      0.0f,       0.0f,       1.0f,       0.3785f,    1.0f),
+
+            AxisAlignedBB.getBoundingBox(0.0f,      0.3785f,    0.0f,       0.062f,     1.93f,      0.062f),
+            AxisAlignedBB.getBoundingBox(0.938f,    0.3785f,    0.0f,       1.0f,       1.93f,      0.062f),
+            AxisAlignedBB.getBoundingBox(0.0f,      0.3785f,    0.938f,     0.062f,     1.93f,      1.0f),
+            AxisAlignedBB.getBoundingBox(0.938f,    0.3785f,    0.938f,     1.0f,       1.93f,      1.0f),
+
+            AxisAlignedBB.getBoundingBox(0.062f,    0.3785f,    0.062f,     0.938f,     1.93f,      0.938f),
+
+            AxisAlignedBB.getBoundingBox(0.0f,      1.93f,      0.0f,       1.0f,       2.0f,       1.0f)
+        }
+    };
+
+    public static class Bottom extends BlockContainer implements IBlockHighlight
     {
         public static String[] colors = {"black", "red", "green", "brown", "blue", "purple", "cyan", "light_gray", "gray", "pink", "lime", "yellow", "light_blue", "magenta", "orange", "white"};
         @SideOnly(Side.CLIENT)
@@ -100,7 +131,7 @@ public class BlockCultivate
         public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float t, float h, float k)
         {
             ItemStack stack = player.getCurrentEquippedItem();
-            if (stack != null && stack.getItem() == Items.water_bucket && (!Util.getConfigData().buildcraftFeatures || !Util.buildcraftEnabled()) && ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel < 8)
+            if (stack != null && stack.getItem() == Items.water_bucket && ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel < 8)
             {
                 ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel += 2;
                 if (((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel == 8) updateBlockStateWithBottom(world, x, y, z, true);
@@ -122,11 +153,48 @@ public class BlockCultivate
 
         public TileEntity createNewTileEntity(World world, int meta)
         {
-            return Util.buildcraftEnabled() ? new TileCultivateBuildcraft() : new TileCultivate();
+            return new TileCultivate();
+        }
+
+        public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB box, List list, Entity entity)
+        {
+            AxisAlignedBB[] aabbs = boxes[1];
+            for (AxisAlignedBB aabb : aabbs)
+            {
+                AxisAlignedBB aabbTmp = aabb.getOffsetBoundingBox(x, y, z);
+                if (box.intersectsWith(aabbTmp)) list.add(aabbTmp);
+            }
+        }
+
+        public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 origin, Vec3 direction)
+        {
+            AxisAlignedBB[] aabbs = boxes[1];
+            MovingObjectPosition closest = null;
+            for (AxisAlignedBB aabb : aabbs)
+            {
+                MovingObjectPosition mop = aabb.getOffsetBoundingBox(x, y, z).calculateIntercept(origin, direction);
+                if (mop != null)
+                {
+                    if (closest != null && mop.hitVec.distanceTo(origin) < closest.hitVec.distanceTo(origin)) closest = mop;
+                    else closest = mop;
+                }
+            }
+            if (closest != null)
+            {
+                closest.blockX = x;
+                closest.blockY = y;
+                closest.blockZ = z;
+            }
+            return closest;
+        }
+
+        public AxisAlignedBB[] getBoxes(World world, int x, int y, int z, EntityPlayer player)
+        {
+            return boxes[1];
         }
     }
 
-    public static class Top extends Block
+    public static class Top extends Block implements IBlockHighlight
     {
         public static String[] colors = {"black", "red", "green", "brown", "blue", "purple", "cyan", "light_gray", "gray", "pink", "lime", "yellow", "light_blue", "magenta", "orange", "white"};
         @SideOnly(Side.CLIENT)
@@ -210,13 +278,50 @@ public class BlockCultivate
         public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float t, float h, float k)
         {
             ItemStack stack = player.getCurrentEquippedItem();
-            if (stack != null && stack.getItem() == Items.water_bucket && !Util.buildcraftEnabled() && ((TileCultivate) world.getTileEntity(x, y - 1, z)).fluidLevel < 8)
+            if (stack != null && stack.getItem() == Items.water_bucket && ((TileCultivate) world.getTileEntity(x, y - 1, z)).fluidLevel < 8)
             {
                 ((TileCultivate) world.getTileEntity(x, y - 1, z)).fluidLevel += 2;
                 if (((TileCultivate) world.getTileEntity(x, y - 1, z)).fluidLevel == 8) updateBlockStateWithTop(world, x, y, z, true);
             }
             else player.openGui(JurassiCraft.instance, 0, world, x, y - 1, z);
             return true;
+        }
+
+        public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB box, List list, Entity entity)
+        {
+            AxisAlignedBB[] aabbs = boxes[0];
+            for (AxisAlignedBB aabb : aabbs)
+            {
+                AxisAlignedBB aabbTmp = aabb.getOffsetBoundingBox(x, y, z);
+                if (box.intersectsWith(aabbTmp)) list.add(aabbTmp);
+            }
+        }
+
+        public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 origin, Vec3 direction)
+        {
+            AxisAlignedBB[] aabbs = boxes[0];
+            MovingObjectPosition closest = null;
+            for (AxisAlignedBB aabb : aabbs)
+            {
+                MovingObjectPosition mop = aabb.getOffsetBoundingBox(x, y, z).calculateIntercept(origin, direction);
+                if (mop != null)
+                {
+                    if (closest != null && mop.hitVec.distanceTo(origin) < closest.hitVec.distanceTo(origin)) closest = mop;
+                    else closest = mop;
+                }
+            }
+            if (closest != null)
+            {
+                closest.blockX = x;
+                closest.blockY = y;
+                closest.blockZ = z;
+            }
+            return closest;
+        }
+
+        public AxisAlignedBB[] getBoxes(World world, int x, int y, int z, EntityPlayer player)
+        {
+            return boxes[0];
         }
     }
 

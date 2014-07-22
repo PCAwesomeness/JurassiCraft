@@ -2,6 +2,7 @@ package to.uk.ilexiconn.jurassicraft.data.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,12 +14,13 @@ public class Config
 
     public void readConfig(File configFile) throws Exception
     {
-        if (!configFile.exists())
+        File file = new File(FilenameUtils.removeExtension(configFile.getCanonicalPath()) + ".json");
+        if (!file.exists())
         {
-            if (!configFile.createNewFile()) throw new RuntimeException("[JurassiCraft] Failed to create config file!");
-            else writeConfig(configFile);
+            if (!file.createNewFile()) throw new RuntimeException("[JurassiCraft] Failed to create config file!");
+            else writeConfig(file);
         }
-        config = new Gson().fromJson(new FileReader(configFile), ConfigData.class);
+        config = new Gson().fromJson(new FileReader(file), ConfigData.class);
     }
 
     private void writeConfig(File configFile)

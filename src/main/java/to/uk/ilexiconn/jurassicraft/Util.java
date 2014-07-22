@@ -2,7 +2,7 @@ package to.uk.ilexiconn.jurassicraft;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeManager;
+import net.minecraftforge.common.MinecraftForge;
 import thehippomaster.AnimationAPI.AnimationAPI;
 import thehippomaster.AnimationAPI.CommonProxy;
 import to.uk.ilexiconn.jurassicraft.data.Data;
@@ -110,6 +111,12 @@ public class Util
         GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
     }
 
+    public void addEvent(Object event, boolean fml)
+    {
+        if (fml) FMLCommonHandler.instance().bus().register(event);
+        else MinecraftForge.EVENT_BUS.register(event);
+    }
+
     //Getters
     public static String getModId()
     {
@@ -160,11 +167,6 @@ public class Util
     public static int getRenderId(int id)
     {
         return ((ISimpleBlockRenderingHandler) stuff[3][id]).getRenderId();
-    }
-
-    public static boolean buildcraftEnabled()
-    {
-        return Loader.isModLoaded("BuildCraft|Core");
     }
 
     public static Config getConfig()

@@ -21,6 +21,8 @@ import net.minecraftforge.common.BiomeManager;
 import thehippomaster.AnimationAPI.AnimationAPI;
 import thehippomaster.AnimationAPI.CommonProxy;
 import to.uk.ilexiconn.jurassicraft.data.Data;
+import to.uk.ilexiconn.jurassicraft.data.config.Config;
+import to.uk.ilexiconn.jurassicraft.data.config.ConfigData;
 import to.uk.ilexiconn.jurassicraft.data.server.ServerProxy;
 import to.uk.ilexiconn.jurassicraft.data.server.entity.EntityParser;
 
@@ -33,6 +35,7 @@ public class Util
     private static CommonProxy animationProxy;
     private static AnimationAPI animationAPI;
     private static Data data = new Data();
+    private static Config config = new Config();
     private static EntityParser entityParser = new EntityParser();
     private static Object[][] stuff = new Object[4][1024];
 
@@ -102,6 +105,11 @@ public class Util
         RenderingRegistry.registerBlockHandler(blockHandler);
     }
 
+    public void addTileEntity(Class<? extends TileEntity> tileEntity)
+    {
+        GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
+    }
+
     //Getters
     public static String getModId()
     {
@@ -157,5 +165,15 @@ public class Util
     public static boolean buildcraftEnabled()
     {
         return Loader.isModLoaded("BuildCraft|Core");
+    }
+
+    public static Config getConfig()
+    {
+        return config;
+    }
+
+    public static ConfigData getConfigData()
+    {
+        return config.config;
     }
 }

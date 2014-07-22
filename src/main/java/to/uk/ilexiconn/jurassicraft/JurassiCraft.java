@@ -14,6 +14,7 @@ public class JurassiCraft
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws Exception
     {
+        Util.getConfig().readConfig(event.getSuggestedConfigurationFile());
         Util.getProxy().init();
     }
 

@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import to.uk.ilexiconn.jurassicraft.JurassiCraft;
 import to.uk.ilexiconn.jurassicraft.Util;
 import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivate;
+import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivateBuildcraft;
 
 import java.util.List;
 import java.util.Random;
@@ -99,7 +100,7 @@ public class BlockCultivate
         public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int metadata, float t, float h, float k)
         {
             ItemStack stack = player.getCurrentEquippedItem();
-            if (stack != null && stack.getItem() == Items.water_bucket && !Util.buildcraftEnabled() && ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel < 8)
+            if (stack != null && stack.getItem() == Items.water_bucket && (!Util.getConfigData().buildcraftFeatures || !Util.buildcraftEnabled()) && ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel < 8)
             {
                 ((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel += 2;
                 if (((TileCultivate) world.getTileEntity(x, y, z)).fluidLevel == 8) updateBlockStateWithBottom(world, x, y, z, true);
@@ -121,7 +122,7 @@ public class BlockCultivate
 
         public TileEntity createNewTileEntity(World world, int meta)
         {
-            return new TileCultivate();
+            return Util.buildcraftEnabled() ? new TileCultivateBuildcraft() : new TileCultivate();
         }
     }
 

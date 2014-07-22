@@ -16,7 +16,7 @@ public class EntityParser extends Util
 {
     public void init() throws Exception
     {
-        Collection<EntityEntry> entries = new Gson().fromJson(new FileReader(getConfig()), new TypeToken<Collection<EntityEntry>>(){}.getType());
+        Collection<EntityEntry> entries = new Gson().fromJson(new FileReader(getTempFile()), new TypeToken<Collection<EntityEntry>>(){}.getType());
         for (EntityEntry entity : entries)
         {
             addEntity(entity.name, Class.forName("to.uk.ilexiconn.jurassicraft.data.server.entity.Entity" + entity.name).asSubclass(EntityLiving.class), 0, 0);
@@ -27,7 +27,7 @@ public class EntityParser extends Util
     @SideOnly(Side.CLIENT)
     public void initClient() throws Exception
     {
-        Collection<EntityEntry> entries = new Gson().fromJson(new FileReader(getConfig()), new TypeToken<Collection<EntityEntry>>(){}.getType());
+        Collection<EntityEntry> entries = new Gson().fromJson(new FileReader(getTempFile()), new TypeToken<Collection<EntityEntry>>(){}.getType());
         for (EntityEntry entity : entries)
         {
             Util.getProxy().renderEntity(Class.forName("to.uk.ilexiconn.jurassicraft.data.server.entity.Entity" + entity.name).asSubclass(EntityLiving.class), Class.forName("to.uk.ilexiconn.jurassicraft.data.client.entity.Render" + entity.name).asSubclass(RenderLiving.class).newInstance());
@@ -35,7 +35,7 @@ public class EntityParser extends Util
         }
     }
 
-    private File getConfig()
+    private File getTempFile()
     {
         try
         {

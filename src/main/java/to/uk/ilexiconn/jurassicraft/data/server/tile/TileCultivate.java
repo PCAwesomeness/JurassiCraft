@@ -15,14 +15,12 @@ public class TileCultivate extends TileEntity
 
     public void writeToNBT(NBTTagCompound tag)
     {
-        super.writeToNBT(tag);
         tag.setInteger("rotation", rotation);
         tag.setInteger("level", fluidLevel);
     }
 
     public void readFromNBT(NBTTagCompound tag)
     {
-        super.readFromNBT(tag);
         rotation = tag.getInteger("rotation");
         fluidLevel = tag.getInteger("level");
     }

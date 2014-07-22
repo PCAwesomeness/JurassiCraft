@@ -14,6 +14,7 @@ import to.uk.ilexiconn.jurassicraft.data.server.creativetab.TabJurassiCraft;
 import to.uk.ilexiconn.jurassicraft.data.server.gui.GuiHandler;
 import to.uk.ilexiconn.jurassicraft.data.server.item.ItemCultivate;
 import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivate;
+import to.uk.ilexiconn.jurassicraft.data.server.tile.TileCultivateBuildcraft;
 
 public class Data extends Util
 {
@@ -43,6 +44,8 @@ public class Data extends Util
         }
         { //Events
             addGuiHandler(new GuiHandler());
+
+            if (buildcraftEnabled()) addTileEntity(TileCultivateBuildcraft.class);
         }
         { //Biomes
 

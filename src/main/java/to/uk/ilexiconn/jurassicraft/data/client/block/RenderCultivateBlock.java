@@ -134,7 +134,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         GL11.glPopMatrix();
 
         int[] displayList = getFluidDisplayLists(tile.getWorldObj());
-        if (displayList != null)
+        if (displayList != null && tile.fluidLevel - (tile.fluidLevel == 0 ? 0 : 1) != 0)
         {
             GL11.glPushMatrix();
             GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
@@ -145,7 +145,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
             GL11.glTranslatef((float) x + 0.125f, (float) y + 0.75f, (float) z + 0.125f);
             GL11.glScalef(0.75f, 0.75f, 0.75f);
             GL11.glTranslatef(0, -0.5f, 0);
-            GL11.glCallList(displayList[tile.fluidLevel - 1]);
+            GL11.glCallList(displayList[tile.fluidLevel - (tile.fluidLevel == 0 ? 0 : 1)]);
             GL11.glPopAttrib();
             GL11.glPopMatrix();
         }
@@ -156,7 +156,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
         GL11.glTranslatef((float) x + 0.5f, (float) y + 1.5f, (float) z + 0.5f);
         GL11.glRotatef(180f, 0f, 0f, 1f);
         Minecraft.getMinecraft().renderEngine.bindTexture(cultivateTextures[tile.getWorldObj().getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord)]);
-        //cultivate.renderGlass();
+        cultivate.renderGlass();
         GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_BLEND);
     }
@@ -189,7 +189,7 @@ public class RenderCultivateBlock extends TileEntitySpecialRenderer
             liquidBlock.minZ = 0.01f;
 
             liquidBlock.maxX = 0.99f;
-            liquidBlock.maxY = (float) s / (float) 100;
+            liquidBlock.maxY = (float) s / (float) displayLists.length;
             liquidBlock.maxZ = 0.99f;
 
             renderBlock(liquidBlock, world, 0, 0, 0, false);

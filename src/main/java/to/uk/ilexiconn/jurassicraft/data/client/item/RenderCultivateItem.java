@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
-import to.uk.ilexiconn.jurassicraft.Util;
+import to.uk.ilexiconn.jurassicraft.api.Util;
 import to.uk.ilexiconn.jurassicraft.data.client.block.model.ModelCultivate;
 
 @SideOnly(Side.CLIENT)

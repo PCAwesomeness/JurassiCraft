@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import to.uk.ilexiconn.jurassicraft.Util;
+import to.uk.ilexiconn.jurassicraft.api.Util;
 import to.uk.ilexiconn.jurassicraft.data.client.block.model.ModelEgg;
 import to.uk.ilexiconn.jurassicraft.data.server.tile.TileEgg;
 

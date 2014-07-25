@@ -13,7 +13,7 @@ import net.minecraft.util.Timer;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import to.uk.ilexiconn.jurassicraft.JurassiCraft;
-import to.uk.ilexiconn.jurassicraft.Util;
+import to.uk.ilexiconn.jurassicraft.api.Util;
 import to.uk.ilexiconn.jurassicraft.data.server.ServerProxy;
 
 public class ClientProxy extends ServerProxy

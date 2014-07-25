@@ -3,7 +3,7 @@ package to.uk.ilexiconn.jurassicraft.data.packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.client.Minecraft;
-import to.uk.ilexiconn.jurassicraft.data.server.entity.IAnimatedEntity;
+import to.uk.ilexiconn.jurassicraft.api.IAnimatedEntity;
 
 public class PacketAnimation extends AbstractPacket
 {

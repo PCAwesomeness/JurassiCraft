@@ -1,4 +1,4 @@
-package to.uk.ilexiconn.jurassicraft.data.server.block;
+package to.uk.ilexiconn.jurassicraft.api;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;

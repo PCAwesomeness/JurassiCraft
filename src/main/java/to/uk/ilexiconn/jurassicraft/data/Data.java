@@ -7,7 +7,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import to.uk.ilexiconn.jurassicraft.JurassiCraft;
-import to.uk.ilexiconn.jurassicraft.Util;
+import to.uk.ilexiconn.jurassicraft.api.Util;
 import to.uk.ilexiconn.jurassicraft.data.client.block.RenderCultivateBlock;
 import to.uk.ilexiconn.jurassicraft.data.client.block.RenderEggBlock;
 import to.uk.ilexiconn.jurassicraft.data.client.event.RenderBlockBoundsEvent;

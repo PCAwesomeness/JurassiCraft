@@ -9,7 +9,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import to.uk.ilexiconn.jurassicraft.Util;
+import to.uk.ilexiconn.jurassicraft.api.Util;
+import to.uk.ilexiconn.jurassicraft.api.IBlockHighlight;
 import to.uk.ilexiconn.jurassicraft.data.server.entity.EntityEntry;
 import to.uk.ilexiconn.jurassicraft.data.server.tile.TileEgg;
 

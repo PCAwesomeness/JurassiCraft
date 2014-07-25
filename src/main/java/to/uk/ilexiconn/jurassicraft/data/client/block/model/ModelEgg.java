@@ -1,7 +1,7 @@
 package to.uk.ilexiconn.jurassicraft.data.client.block.model;
 
-import to.uk.ilexiconn.jurassicraft.data.client.animationbase.MowzieModelBase;
-import to.uk.ilexiconn.jurassicraft.data.client.animationbase.MowzieModelRenderer;
+import to.uk.ilexiconn.jurassicraft.data.client.modelbase.MowzieModelBase;
+import to.uk.ilexiconn.jurassicraft.data.client.modelbase.MowzieModelRenderer;
 
 public class ModelEgg extends MowzieModelBase
 {

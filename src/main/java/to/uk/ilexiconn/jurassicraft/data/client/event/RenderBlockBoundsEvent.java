@@ -11,7 +11,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import org.lwjgl.opengl.GL11;
-import to.uk.ilexiconn.jurassicraft.data.server.block.IBlockHighlight;
+import to.uk.ilexiconn.jurassicraft.api.IBlockHighlight;
 
 public class RenderBlockBoundsEvent
 {

@@ -1,4 +1,4 @@
-package to.uk.ilexiconn.jurassicraft;
+package to.uk.ilexiconn.jurassicraft.api;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -20,7 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import to.uk.ilexiconn.jurassicraft.data.server.entity.IAnimatedEntity;
+import to.uk.ilexiconn.jurassicraft.JurassiCraft;
 import to.uk.ilexiconn.jurassicraft.data.Data;
 import to.uk.ilexiconn.jurassicraft.data.config.Config;
 import to.uk.ilexiconn.jurassicraft.data.config.ConfigData;

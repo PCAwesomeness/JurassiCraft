@@ -1,8 +1,9 @@
-package to.uk.ilexiconn.jurassicraft.data.server.entity;
+package to.uk.ilexiconn.jurassicraft.data.server.ai;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
-import to.uk.ilexiconn.jurassicraft.Util;
+import to.uk.ilexiconn.jurassicraft.api.Util;
+import to.uk.ilexiconn.jurassicraft.api.IAnimatedEntity;
 
 public abstract class AIAnimation extends EntityAIBase
 {

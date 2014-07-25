@@ -1,3 +1,16 @@
 [
-
+    {
+        "id":0,
+        "name":"Ankylosaur",
+        "speed":0.2,
+        "health":80,
+        "strength":105,
+        "scale":2.5,
+        "hitboxX":2.3,
+        "hitboxY":2.4,
+        "livingSound1":"jurassicraft:ankylo1",
+        "livingSound2":"jurassicraft:ankylo2",
+        "hurtSound":"jurassicraft:ankylo1",
+        "deathSound":"jurassicraft:ankylo2"
+    }
 ]

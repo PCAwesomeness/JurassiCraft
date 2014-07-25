@@ -27,11 +27,6 @@ group = "to.uk.ilexiconn.jurassicraft"
 archivesBaseName = "JurassiCraft"
 libsDirName = '../target'
 
-dependencies
-{
-	compile 'com.mod-buildcraft:buildcraft:6.0.17:dev'
-}
-
 minecraft
 {
     version = "1.7.10-10.13.0.1182"

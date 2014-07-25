@@ -9,11 +9,11 @@ import net.minecraft.world.World;
 import to.uk.ilexiconn.jurassicraft.Util;
 import to.uk.ilexiconn.jurassicraft.data.server.block.BlockCultivate;
 
-public class ItemCultivate extends ItemBlock
+public class ItemBlockCultivate extends ItemBlock
 {
     public String[] colors = {"black", "red", "green", "brown", "blue", "purple", "cyan", "light_gray", "gray", "pink", "lime", "yellow", "light_blue", "magenta", "orange", "white"};
 
-    public ItemCultivate(Block block)
+    public ItemBlockCultivate(Block block)
     {
         super(block);
         setHasSubtypes(true);

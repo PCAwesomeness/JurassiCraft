@@ -1,4 +1,4 @@
-package to.uk.ilexiconn.jurassicraft.data.client.block;
+package to.uk.ilexiconn.jurassicraft.data.client.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

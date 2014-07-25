@@ -38,7 +38,7 @@ public class Util
     private static Data data = new Data();
     private static Config config = new Config();
     private static EntityParser entityParser = new EntityParser();
-    private static Object[][] stuff = new Object[4][1024];
+    protected static Object[][] stuff = new Object[4][1024];
 
     //Setters
     public void addCreativeTab(int id, CreativeTabs creativeTab)

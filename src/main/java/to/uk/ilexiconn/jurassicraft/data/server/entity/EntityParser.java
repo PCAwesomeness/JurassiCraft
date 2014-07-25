@@ -4,12 +4,15 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.Item;
 import org.apache.commons.io.IOUtils;
 import to.uk.ilexiconn.jurassicraft.Util;
+import to.uk.ilexiconn.jurassicraft.data.client.item.RenderEggItem;
+import to.uk.ilexiconn.jurassicraft.data.server.block.BlockEgg;
+import to.uk.ilexiconn.jurassicraft.data.server.tile.TileEgg;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class EntityParser extends Util
@@ -19,19 +22,21 @@ public class EntityParser extends Util
         Collection<EntityEntry> entries = new Gson().fromJson(new FileReader(getTempFile()), new TypeToken<Collection<EntityEntry>>(){}.getType());
         for (EntityEntry entity : entries)
         {
-            addEntity(entity.name, Class.forName("to.uk.ilexiconn.jurassicraft.data.server.entity.Entity" + entity.name).asSubclass(EntityLiving.class), 0, 0);
-            System.out.println("[JurassiCraft/SERVER] Registered dino " + entity.name + " [DinoProperties:{id:" + entity.id + ",health:" + entity.health + ",speed:" + entity.speed + ",scale:" + entity.scale + "}]");
+            addBlock(500 + entity.id, new BlockEgg(entity));
+            //addEntity(entity.name, Class.forName("to.uk.ilexiconn.jurassicraft.data.server.entity.Entity" + entity.name).asSubclass(EntityLiving.class), 0, 0);
+            System.out.println("[JurassiCraft/SERVER] Registered entity " + entity.name + " with properties:" + Arrays.asList("scale", entity.scale, "speed", entity.speed, "health", entity.health, "strength", entity.strength));
         }
     }
 
     @SideOnly(Side.CLIENT)
     public void initClient() throws Exception
     {
+        addTileEntity(TileEgg.class);
         Collection<EntityEntry> entries = new Gson().fromJson(new FileReader(getTempFile()), new TypeToken<Collection<EntityEntry>>(){}.getType());
         for (EntityEntry entity : entries)
         {
-            Util.getProxy().renderEntity(Class.forName("to.uk.ilexiconn.jurassicraft.data.server.entity.Entity" + entity.name).asSubclass(EntityLiving.class), Class.forName("to.uk.ilexiconn.jurassicraft.data.client.entity.Render" + entity.name).asSubclass(RenderLiving.class).newInstance());
-            System.out.println("[JurassiCraft/CLIENT] Registered renderer for " + entity.name);
+            getProxy().renderItem(Item.getItemFromBlock(getBlock(500 + entity.id)), new RenderEggItem(entity));
+            //Util.getProxy().renderEntity(Class.forName("to.uk.ilexiconn.jurassicraft.data.server.entity.Entity" + entity.name).asSubclass(EntityLiving.class), Class.forName("to.uk.ilexiconn.jurassicraft.data.client.entity.Render" + entity.name).asSubclass(RenderLiving.class).newInstance());
         }
     }
 

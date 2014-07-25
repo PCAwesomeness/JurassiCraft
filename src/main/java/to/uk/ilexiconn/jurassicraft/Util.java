@@ -11,6 +11,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -19,11 +20,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
-import thehippomaster.AnimationAPI.AnimationAPI;
-import thehippomaster.AnimationAPI.CommonProxy;
+import to.uk.ilexiconn.jurassicraft.data.server.entity.IAnimatedEntity;
 import to.uk.ilexiconn.jurassicraft.data.Data;
 import to.uk.ilexiconn.jurassicraft.data.config.Config;
 import to.uk.ilexiconn.jurassicraft.data.config.ConfigData;
+import to.uk.ilexiconn.jurassicraft.data.packet.PacketAnimation;
 import to.uk.ilexiconn.jurassicraft.data.server.ServerProxy;
 import to.uk.ilexiconn.jurassicraft.data.server.entity.EntityParser;
 
@@ -32,9 +33,6 @@ public class Util
     //Stuff
     @SidedProxy(serverSide = "to.uk.ilexiconn.jurassicraft.data.server.ServerProxy", clientSide = "to.uk.ilexiconn.jurassicraft.data.client.ClientProxy")
     private static ServerProxy proxy;
-    @SidedProxy(clientSide = "thehippomaster.AnimationAPI.client.ClientProxy", serverSide = "thehippomaster.AnimationAPI.CommonProxy")
-    private static CommonProxy animationProxy;
-    private static AnimationAPI animationAPI;
     private static Data data = new Data();
     private static Config config = new Config();
     private static EntityParser entityParser = new EntityParser();
@@ -133,17 +131,6 @@ public class Util
         return proxy;
     }
 
-    public static CommonProxy getAnimationProxy()
-    {
-        return animationProxy;
-    }
-
-    public static AnimationAPI getAnimationAPI()
-    {
-        if(animationAPI == null) animationAPI = new AnimationAPI();
-        return animationAPI;
-    }
-
     public static EntityParser getEntityParser()
     {
         return entityParser;
@@ -177,5 +164,13 @@ public class Util
     public static ConfigData getConfigData()
     {
         return config.config;
+    }
+
+    public static void sendAnimationPacket(IAnimatedEntity entity, int animID)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) return;
+        entity.setAnimID(animID);
+        Entity e = (Entity) entity;
+        JurassiCraft.packetPipeline.sendToAll(new PacketAnimation((byte) animID, e.getEntityId()));
     }
 }

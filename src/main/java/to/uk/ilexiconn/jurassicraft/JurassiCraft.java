@@ -12,6 +12,7 @@ public class JurassiCraft
     @Mod.Instance("jurassicraft")
     public static JurassiCraft instance;
     public static PacketPipeline packetPipeline;
+    public static String[] fTimer;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws Exception
@@ -25,13 +26,16 @@ public class JurassiCraft
     public void init(FMLInitializationEvent event)
     {
         packetPipeline.init();
-        Util.getAnimationAPI().init(event);
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
         packetPipeline.postInit();
-        Util.getAnimationAPI().postInit(event);
+    }
+
+    static
+    {
+        fTimer = new String[]{"field_71428_T", "S", "timer"};
     }
 }

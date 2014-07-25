@@ -16,6 +16,11 @@ public class ServerProxy
         Util.getEntityParser().init();
     }
 
+    public float getPartialTick()
+    {
+        return 1f;
+    }
+
     public void renderEntity(Class<? extends EntityLiving> entity, RenderLiving renderLiving)
     {
 

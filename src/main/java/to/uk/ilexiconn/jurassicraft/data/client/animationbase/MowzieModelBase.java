@@ -1,4 +1,4 @@
-package to.uk.ilexiconn.jurassicraft.data.client.modelbase;
+package to.uk.ilexiconn.jurassicraft.data.client.animationbase;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;

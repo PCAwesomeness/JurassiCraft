@@ -12,7 +12,7 @@ import to.uk.ilexiconn.jurassicraft.data.client.block.RenderCultivateBlock;
 import to.uk.ilexiconn.jurassicraft.data.client.block.RenderEggBlock;
 import to.uk.ilexiconn.jurassicraft.data.client.event.RenderBlockBoundsEvent;
 import to.uk.ilexiconn.jurassicraft.data.client.item.RenderCultivateItem;
-import to.uk.ilexiconn.jurassicraft.data.packet.PacketUpdateProgress;
+import to.uk.ilexiconn.jurassicraft.data.packet.PacketAnimation;
 import to.uk.ilexiconn.jurassicraft.data.server.block.BlockCultivate;
 import to.uk.ilexiconn.jurassicraft.data.server.creativetab.TabJurassiCraft;
 import to.uk.ilexiconn.jurassicraft.data.server.gui.GuiHandler;
@@ -47,6 +47,7 @@ public class Data extends Util
             }
         }
         { //Events
+            addTileEntity(TileEgg.class);
             addGuiHandler(new GuiHandler());
             addEvent(new RenderBlockBoundsEvent(), false);
         }
@@ -54,7 +55,7 @@ public class Data extends Util
 
         }
         { //Packets
-            JurassiCraft.packetPipeline.registerPacket(PacketUpdateProgress.class);
+            JurassiCraft.packetPipeline.registerPacket(PacketAnimation.class);
         }
     }
 

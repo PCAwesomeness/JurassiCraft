@@ -9,7 +9,6 @@ import org.apache.commons.io.IOUtils;
 import to.uk.ilexiconn.jurassicraft.Util;
 import to.uk.ilexiconn.jurassicraft.data.client.item.RenderEggItem;
 import to.uk.ilexiconn.jurassicraft.data.server.block.BlockEgg;
-import to.uk.ilexiconn.jurassicraft.data.server.tile.TileEgg;
 
 import java.io.*;
 import java.util.Arrays;
@@ -31,7 +30,6 @@ public class EntityParser extends Util
     @SideOnly(Side.CLIENT)
     public void initClient() throws Exception
     {
-        addTileEntity(TileEgg.class);
         Collection<EntityEntry> entries = new Gson().fromJson(new FileReader(getTempFile()), new TypeToken<Collection<EntityEntry>>(){}.getType());
         for (EntityEntry entity : entries)
         {

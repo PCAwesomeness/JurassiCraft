@@ -9,7 +9,6 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 import to.uk.ilexiconn.jurassicraft.api.Util;
 import to.uk.ilexiconn.jurassicraft.data.client.block.model.ModelEgg;
-import to.uk.ilexiconn.jurassicraft.data.server.entity.EntityEntry;
 
 @SideOnly(Side.CLIENT)
 public class RenderEggItem implements IItemRenderer
@@ -17,9 +16,9 @@ public class RenderEggItem implements IItemRenderer
     public ModelEgg model = new ModelEgg();
     public ResourceLocation texture;
 
-    public RenderEggItem(EntityEntry entity)
+    public RenderEggItem()
     {
-        texture = new ResourceLocation(Util.getModId() + "textures/blocks/egg_" + entity.name.toLowerCase() + ".png");
+        texture = new ResourceLocation(Util.getModId() + "textures/blocks/egg_" + null + ".png");
     }
 
     public boolean handleRenderType(ItemStack item, ItemRenderType type)

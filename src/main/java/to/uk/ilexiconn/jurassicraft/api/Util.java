@@ -10,6 +10,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -26,7 +27,6 @@ import to.uk.ilexiconn.jurassicraft.data.config.Config;
 import to.uk.ilexiconn.jurassicraft.data.config.ConfigData;
 import to.uk.ilexiconn.jurassicraft.data.packet.PacketAnimation;
 import to.uk.ilexiconn.jurassicraft.data.server.ServerProxy;
-import to.uk.ilexiconn.jurassicraft.data.server.entity.EntityParser;
 
 public class Util
 {
@@ -35,81 +35,81 @@ public class Util
     private static ServerProxy proxy;
     private static Data data = new Data();
     private static Config config = new Config();
-    private static EntityParser entityParser = new EntityParser();
     protected static Object[][] stuff = new Object[4][1024];
 
     //Setters
-    public void addCreativeTab(int id, CreativeTabs creativeTab)
+    public static void addCreativeTab(int id, CreativeTabs creativeTab)
     {
         if (id != -1) stuff[0][id] = creativeTab;
     }
 
-    public void addItem(int id, Item item)
+    public static void addItem(int id, Item item)
     {
         if (id != -1) stuff[1][id] = id;
         GameRegistry.registerItem(item, item.getUnlocalizedName());
     }
 
-    public void addBlock(int id, Block block)
+    public static void addBlock(int id, Block block)
     {
         if (id != -1) stuff[2][id] = block;
         GameRegistry.registerBlock(block, block.getUnlocalizedName());
     }
 
-    public void addBlockWithTileEntity(int id, BlockContainer block, Class<? extends TileEntity> tileEntity, boolean registerEntity)
+    public static void addBlockWithTileEntity(int id, BlockContainer block, Class<? extends TileEntity> tileEntity, boolean registerEntity)
     {
         addBlock(id, block);
         if (registerEntity) GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
     }
 
-    public void addBlockWithSubBlocks(int id, Block block, Class<? extends TileEntity> tileEntity, Class<? extends ItemBlock> itemBlock, boolean renderEntity)
+    public static void addBlockWithSubBlocks(int id, Block block, Class<? extends TileEntity> tileEntity, Class<? extends ItemBlock> itemBlock, boolean renderEntity)
     {
         if (id != -1) stuff[2][id] = block;
         GameRegistry.registerBlock(block, itemBlock, block.getUnlocalizedName());
         if (renderEntity) GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
     }
 
-    public void addEntity(String name, Class<? extends EntityLiving> entity, int color1, int color2)
+    public static void addEntity(String name, Class<? extends EntityLiving> entity, int color1, int color2, RenderLiving renderLiving)
     {
         int entityId = EntityRegistry.findGlobalUniqueEntityId();
         EntityRegistry.registerGlobalEntityID(entity, name, entityId, color1, color2);
         EntityRegistry.registerModEntity(entity, name, entityId, JurassiCraft.instance, 64, 1, true);
+        getProxy().renderEntity(entity, renderLiving);
     }
 
-    public void addShapedRecipe(ItemStack output, Object... obj)
+    public static void addShapedRecipe(ItemStack output, Object... obj)
     {
         GameRegistry.addRecipe(output, obj);
     }
 
-    public void addShapelessRecipe(ItemStack output, Object... obj)
+    public static void addShapelessRecipe(ItemStack output, Object... obj)
     {
         GameRegistry.addShapelessRecipe(output, obj);
     }
 
-    public void addGuiHandler(IGuiHandler handler)
+    public static void addGuiHandler(IGuiHandler handler)
     {
         NetworkRegistry.INSTANCE.registerGuiHandler(JurassiCraft.instance, handler);
     }
 
-    public void addBiome(int id, BiomeGenBase biome)
+    public static void addBiome(int id, BiomeGenBase biome)
     {
         BiomeManager.warmBiomes.add(new BiomeManager.BiomeEntry(biome, id));
         BiomeManager.addSpawnBiome(biome);
         BiomeManager.addVillageBiome(biome, true);
     }
 
-    public void addBlockHandler(int id, ISimpleBlockRenderingHandler blockHandler)
+    public static void addBlockHandler(int id, ISimpleBlockRenderingHandler blockHandler)
     {
         if (id != -1) stuff[3][id] = blockHandler;
         RenderingRegistry.registerBlockHandler(blockHandler);
     }
 
-    public void addTileEntity(Class<? extends TileEntity> tileEntity)
+    public static void addTileEntity(Class<? extends TileEntity> tileEntity)
     {
         GameRegistry.registerTileEntity(tileEntity, tileEntity.getSimpleName());
     }
 
-    public void addEvent(Object event, boolean fml)
+    public static void addEvent(Object event, boolean fml)
     {
         if (fml) FMLCommonHandler.instance().bus().register(event);
         else MinecraftForge.EVENT_BUS.register(event);
@@ -129,11 +129,6 @@ public class Util
     public static ServerProxy getProxy()
     {
         return proxy;
-    }
-
-    public static EntityParser getEntityParser()
-    {
-        return entityParser;
     }
 
     public static CreativeTabs getCreativeTab(int id)
